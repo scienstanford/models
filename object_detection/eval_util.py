@@ -27,6 +27,8 @@ from object_detection.utils import label_map_util
 from object_detection.utils import object_detection_evaluation
 from object_detection.utils import visualization_utils as vis_utils
 
+logging.basicConfig(level=logging.INFO)
+
 slim = tf.contrib.slim
 
 
@@ -485,6 +487,8 @@ def repeated_checkpoint_run(tensor_dict,
     ValueError: if max_num_of_evaluations is not None or a positive number.
     ValueError: if checkpoint_dirs doesn't have at least one element.
   """
+
+
   if max_number_of_evaluations and max_number_of_evaluations <= 0:
     raise ValueError(
         '`number_of_steps` must be either None or a positive number.')

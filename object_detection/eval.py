@@ -45,6 +45,7 @@ Example usage:
 """
 import functools
 import tensorflow as tf
+import os
 
 from google.protobuf import text_format
 from object_detection import evaluator
@@ -138,6 +139,10 @@ def main(unused_argv):
     model_config, eval_config, input_config = get_configs_from_pipeline_file()
   else:
     model_config, eval_config, input_config = get_configs_from_multiple_files()
+
+  if os.path.exists(eval_config.visualization_export_dir) == False:
+      print(eval_config.visualization_export_dir)
+      os.makedirs(eval_config.visualization_export_dir)
 
   model_fn = functools.partial(
       model_builder.build,
