@@ -19,6 +19,7 @@ import copy
 import logging
 import os
 import time
+import json
 
 import numpy as np
 import tensorflow as tf
@@ -265,6 +266,30 @@ def visualize_detection_results(result_dict,
   if export_dir:
     export_path = os.path.join(export_dir, 'export-{}.png'.format(tag))
     vis_utils.save_image_array_as_png(image, export_path)
+
+    # Write a json file with the bounding boxes and detection results
+    detection_dict = dict()
+    detection_dict["objects"] = list()
+    for i in xrange(detection_boxes.shape[0]):
+      bndbbox = {"xmin": float(detection_boxes[i,1]),
+              "xmax":float(detection_boxes[i,3]),
+              "ymin":float(detection_boxes[i,0]),
+              "ymax":float(detection_boxes[i,2])}
+
+      name = ''
+      if detection_classes[i] in category_index:
+          name = category_index[detection_classes[i]]["name"]
+      else :
+          name = "N/A"
+
+      single_detection = {"name": name,
+                        "id": float(detection_classes[i]),
+                        "score": float(detection_scores[i]),
+                        "bndbox":bndbbox}
+      detection_dict["objects"].append(single_detection)
+    export_path = os.path.join(export_dir,'export-{}.json'.format(tag))
+    with open(export_path, 'w') as f:
+        json.dump(detection_dict,f,indent=4,separators=(',',': '))
 
   summary = tf.Summary(value=[
       tf.Summary.Value(tag=tag, image=tf.Summary.Image(

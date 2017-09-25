@@ -91,13 +91,12 @@ def dict_to_tf_example(data,
     encoded_jpg = fid.read()
   encoded_jpg_io = io.BytesIO(encoded_jpg)
   image = PIL.Image.open(encoded_jpg_io)
-
   if image.format == 'JPEG':
       image_format = 'jpeg'
-  elif image.format =='PNG':
+  elif image.format == 'PNG':
       image_format = 'png'
   else:
-    raise ValueError('Image format not JPEG nor PNG')
+      raise ValueError('Image format not JPEG nor PNG')
   key = hashlib.sha256(encoded_jpg).hexdigest()
 
   width = int(data['size']['width'])
@@ -165,7 +164,7 @@ def main(_):
 
   logging.info('Reading from a RTB4 dataset: %s.', mode)
   examples_path = os.path.join(data_dir, FLAGS.set, mode, 'ImageSets', 'Main',
-                                 'car_' + FLAGS.set + '.txt')
+                                 FLAGS.set + '.txt')
   annotations_dir = os.path.join(data_dir, FLAGS.set, mode, FLAGS.annotations_dir)
   examples_list = dataset_util.read_examples_list(examples_path)
   for idx, example in enumerate(examples_list):
